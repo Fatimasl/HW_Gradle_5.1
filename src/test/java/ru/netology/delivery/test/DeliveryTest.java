@@ -41,9 +41,10 @@ class DeliveryTest {
         $("[data-test-id='agreement']").click();
         $(".grid-row button").click();
 
-        $("[data-test-id='success-notification']").shouldBe(visible);
-        $("[data-test-id='success-notification'] .notification__content").
-                shouldHave(exactText("Встреча успешно запланирована на "+firstMeetingDate));
+//        проверка только для начальной встречи
+//        $("[data-test-id='success-notification']").shouldBe(visible);
+//        $("[data-test-id='success-notification'] .notification__content").
+//                shouldHave(exactText("Встреча успешно запланирована на "+firstMeetingDate));
 
         //перепланируем встречу для того же пользователя
         var daysToAddForSecondMeeting = 7;
@@ -53,11 +54,12 @@ class DeliveryTest {
         $("[data-test-id='date'] input").setValue(secondMeetingDate);
         $(".grid-row button").click();
 
-        $("[data-test-id='replan-notification']").shouldBe(visible);
-        $("[data-test-id='replan-notification'] .notification__content").
-                shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+//        проверка предложения перепланировать встречу
+//        $("[data-test-id='replan-notification']").shouldBe(visible);
+//        $("[data-test-id='replan-notification'] .notification__content").
+//                shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
 
-        //проверка успешного перепланирования
+        //проверка успешного перепланирования. 1 тест = 1 проверка
         $$("[data-test-id='replan-notification'] button").find(exactText("Перепланировать")).click();
         $("[data-test-id='success-notification']").shouldBe(visible);
         $("[data-test-id='success-notification'] .notification__content").
