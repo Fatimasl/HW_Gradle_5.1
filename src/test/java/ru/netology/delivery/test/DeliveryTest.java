@@ -24,8 +24,8 @@ class DeliveryTest {
     }
 
     @Test
-    @DisplayName("Should successful plan and replan meeting")
-    void shouldSuccessfulPlanAndReplanMeeting(){
+    @DisplayName("Should successful plan meeting")
+    void shouldSuccessfulPlanMeeting(){
         DataGenerator.UserInfo validUser = DataGenerator.Registration.generateUser("ru");
         var daysToAddForFirstMeeting = 4;
         var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
@@ -41,23 +41,70 @@ class DeliveryTest {
         $("[data-test-id='agreement']").click();
         $(".grid-row button").click();
 
-//        проверка только для начальной встречи
-//        $("[data-test-id='success-notification']").shouldBe(visible);
-//        $("[data-test-id='success-notification'] .notification__content").
-//                shouldHave(exactText("Встреча успешно запланирована на "+firstMeetingDate));
+//        проверка только для начальной встречи. 1 тест = 1 проверка
+        $("[data-test-id='success-notification']").shouldBe(visible, Duration.ofSeconds(15));
+        $("[data-test-id='success-notification'] .notification__content").
+                shouldHave(exactText("Встреча успешно запланирована на "+firstMeetingDate));
 
-        //перепланируем встречу для того же пользователя
-        var daysToAddForSecondMeeting = 7;
+    }
+
+    @Test
+    @DisplayName("Should successful invite to replan meeting")
+    void shouldSuccessfulInviteToReplanMeeting(){
+        DataGenerator.UserInfo validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 5;
+        var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
+
+        //планируем начальную встречу
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+
+        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(firstMeetingDate);
+
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".grid-row button").click();
+
+//      перепланируем встречу для того же пользователя
+        var daysToAddForSecondMeeting = 8;
         var secondMeetingDate = DataGenerator.generateDate(daysToAddForSecondMeeting);
 
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id='date'] input").setValue(secondMeetingDate);
         $(".grid-row button").click();
 
-//        проверка предложения перепланировать встречу
-//        $("[data-test-id='replan-notification']").shouldBe(visible);
-//        $("[data-test-id='replan-notification'] .notification__content").
-//                shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+//        проверка предложения перепланировать встречу. 1 тест = 1 проверка
+        $("[data-test-id='replan-notification']").shouldBe(visible);
+        $("[data-test-id='replan-notification'] .notification__content").
+                shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+    }
+
+    @Test
+    @DisplayName("Should successful replan meeting")
+    void shouldSuccessfulReplanMeeting(){
+        DataGenerator.UserInfo validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 6;
+        var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
+
+        //планируем начальную встречу
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+
+        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(firstMeetingDate);
+
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".grid-row button").click();
+
+        //перепланируем встречу для того же пользователя
+        var daysToAddForSecondMeeting = 4;
+        var secondMeetingDate = DataGenerator.generateDate(daysToAddForSecondMeeting);
+
+        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(secondMeetingDate);
+        $(".grid-row button").click();
 
         //проверка успешного перепланирования. 1 тест = 1 проверка
         $$("[data-test-id='replan-notification'] button").find(exactText("Перепланировать")).click();
